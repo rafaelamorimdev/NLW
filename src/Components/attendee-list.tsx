@@ -9,10 +9,22 @@ import {
 import { IconButton } from "./icon-button";
 import { Table } from "./table/table";
 import { TableHeader } from "./table/Table-header";
+import { TableCell } from "./table/Table-cell";
+import { TableRow } from "./table/table-row";
+import { ChangeEvent, useState } from "react";
+import { attendees } from "../data/attendees";
 
 
 
 export function AttendeeList() {
+  const [search, SetSearch] = useState('')
+
+  function onSearchInputChanged (event: ChangeEvent<HTMLInputElement>) {
+
+    SetSearch(event.target.value)
+
+  }
+
   return (
       <div className="flex flex-col gap-4">
         <div className="flex gap-3 items-center">
@@ -21,11 +33,12 @@ export function AttendeeList() {
             className="px-3 w-72 py-1.5 border border-white/10  rounded-lg  flex
               items-center gap-3"
           ><Search className="size-4 text-emerald-300" />
-            <input
+            <input onChange={onSearchInputChanged}
               className="bg-transparent flex-1 outline-none border-0 p-0 text-sm ring-0"
               placeholder="Buscar Participante..."
             />
           </div>
+          {search}
         </div>
 
         <Table>
@@ -56,47 +69,44 @@ export function AttendeeList() {
               </tr>
             </thead>
             <tbody>
-              {Array.from({ length: 8 }).map((_, i) => {
+              {attendees.map((attendee) => {
                 return (
-                  <tr key={i} className="border-b border-white/10 hover:bg-white/5">
-                    <td className="py-3 px-4 text-sm text-zinc-300 ">
+                  <TableRow key={attendee.id} className="border-b border-white/10 hover:bg-white/5">
+                    <TableCell>
                       <input type="checkbox" className="size-4 bg-black/20 rounded border border-white/10 accent-orange-400" />
-                    </td>
-                    <td className="py-3 px-4 text-sm text-zinc-300">12383</td>
-                    <td className="py-3 px-4 text-sm text-zinc-300">
+                    </TableCell>
+                    <TableCell >{attendee.id}</TableCell>
+                    <TableCell >
                       <div className="flex flex-col gap-1">
-                        <span className="font-semibold text-white">
-                          Diego Schell Fernandes
-                        </span>
-                        <span>diego@rocketseat.com.br</span>
+                        <span className="font-semibold text-white"> {attendee.name}</span>
+                        <span>{attendee.email}</span>
                       </div>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-zinc-300">
-                      7 dias atrás
-                    </td>
-                    <td className="py-3 px-4 text-sm text-zinc-300">
-                      3 dias atrás
-                    </td>
-                    <td className="py-3 px-4 text-sm text-zinc-300">
+                    </TableCell>
+                    <TableCell >
+                      {attendee.createdAt.toISOString()}
+                    </TableCell>
+                    <TableCell >
+                      {attendee.checkedInAt.toISOString()}
+                    </TableCell>
+                    <TableCell >
                       <IconButton transparent={true}>
                         <MoreHorizontal className="size-4" />
                       </IconButton>
                       
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
             </tbody>
             <tfoot>
               <tr>
-                <td className="py-3 px-4 text-sm text-zinc-300" colSpan={3}>
+                <TableCell colSpan={3}>
                   Mostrando 10 de 228 itens
-                </td>
-                <td
-                  className="py-3 px-4 text-sm text-zinc-300 text-right"
+                </TableCell>
+                <TableCell className="text-right"
                   colSpan={3}
                 >
-                  <div className=" items-center gap-8 inline-flex">
+                <div className=" items-center gap-8 inline-flex">
                     <span>Página 1 de 23</span>
                     <div className="flex gap-1.5">
                       <IconButton>
@@ -113,7 +123,7 @@ export function AttendeeList() {
                       </IconButton>
                     </div>
                   </div>
-                </td>
+                </TableCell>
               </tr>
             </tfoot>
           </Table>
